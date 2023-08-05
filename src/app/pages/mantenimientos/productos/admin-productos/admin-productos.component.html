@@ -1,33 +1,42 @@
 <h1 class="titulo">{{titulo}}</h1>
- <form [formGroup] = "productoForm.baseForm">
+<form [formGroup]="productoForm.baseForm">
 
     <mat-form-field>
         <mat-label>Id</mat-label>
         <!-- [readonly]="!isCreate", me sirve que si es metodo crear, me deja edictar el id, pero si es modificar no me deja modificarlo -->
-        <input matInput formControlName= "id" [readonly]="!isCreate">
+        <input matInput formControlName="id" [readonly]="!isCreate">
     </mat-form-field>
 
     <mat-form-field>
         <mat-label>Nombre</mat-label>
-        <input matInput formControlName= "nombre">
+        <input matInput formControlName="nombre">
     </mat-form-field>
 
     <mat-form-field>
         <mat-label>Precio</mat-label>
-        <input type="number" matInput formControlName= "precio">
+        <input type="number" matInput formControlName="precio">
     </mat-form-field>
 
     <mat-form-field>
         <mat-label>Stock</mat-label>
-        <input type="number" matInput formControlName= "stock">
+        <input type="number" matInput formControlName="stock">
     </mat-form-field>
 
     <mat-form-field>
         <mat-label>Fecha Ingreso</mat-label>
-        <input type="date" matInput formControlName= "fechaIngreso">
+        <input type="date" matInput formControlName="fechaIngreso">
     </mat-form-field>
- </form>
 
- <div>
-    <button mat-raised-button color="primary" (click) = "guardar()">Guardar</button>
- </div>
+    <mat-form-field>
+        <mat-label>Categoria</mat-label>
+        <mat-select formControlName = "categoria">
+            <mat-option *ngFor="let categoria of listaCategorias" [value]="categoria.id">
+                {{categoria.nombre}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</form>
+
+<div>
+    <button mat-raised-button color="primary" (click)="guardar()">Guardar</button>
+</div>

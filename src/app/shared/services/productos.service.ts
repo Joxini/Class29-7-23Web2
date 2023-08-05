@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, catchError, throwError } from 'rxjs';
 import { Productos } from '../models/productos';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 
 @Injectable({
@@ -11,7 +11,7 @@ export class ProductosService {
 
   constructor(private http: HttpClient) { }
   getAll(): Observable<Productos[]> {
-    return this.http.get<Productos[]>("http://localhost:3000/productos");
+    return this.http.get<Productos[]>("http://localhost:3000/productos").pipe(catchError(this.handleError));
   }
 
   guardar(producto: Productos): Observable<Productos> {
@@ -26,9 +26,19 @@ export class ProductosService {
     return this.http.delete<Productos>("http://localhost:3000/productos/" + id).pipe(catchError(this.handleError));
   }
 
-  handleError(error:any): Observable<never>{
-    console.log(error);
-    return throwError(error);
+  // Capturar error que nos mande el api
+  handleError(error:HttpErrorResponse){
+    let mensaje = 'Error desconocido, reporte al administrador';
+    // console.log(error);
+    // const values = Object.values(error.error);
+    // values.map((error) =>{
+    //   mensaje+= error
+    // });
+    if(error?.error){
+      mensaje = error?.error?.mensaje;
+    }
+    console.log("Hola")
+    return throwError(()=>Error(mensaje));
     
   }
 }

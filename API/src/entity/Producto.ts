@@ -2,18 +2,20 @@ import { IsEmail, IsNotEmpty, MaxLength, maxLength } from "class-validator";
 import {
   Column,
   Entity,
+  ManyToOne,
   OneToMany,
   PrimaryColumn,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { DetalleFactura } from "./DetalleFactura";
+import { CatergoriaProducto } from "./CategoriaProducto";
 
 @Entity()
 export class Producto {
   @PrimaryColumn()
   id: number;
   @Column({ length: 50 })
-  @MaxLength(50, { message: "Debe ser menos de 50 caracteres" })
+  @MaxLength(3, { message: "Debe ser menos de 50 caracteres" })
   @IsNotEmpty()
   nombre: string;
   @Column()
@@ -29,4 +31,8 @@ export class Producto {
 
   @OneToMany(() => DetalleFactura, (detalle) => detalle.producto)
   detallesFactura: DetalleFactura[];
+
+  // CategoriaProductos
+  @ManyToOne(() => CatergoriaProducto, (categoria) => categoria.productos)
+  categoria: CatergoriaProducto;
 }

@@ -11,7 +11,7 @@ import {MatSelectModule} from '@angular/material/select';
 
 const lista = [MatButtonModule, MatCardModule,
   MatTableModule,MatInputModule,MatFormFieldModule,
-  MatDialogModule
+  MatDialogModule,MatSelectModule
 
 ]
 @NgModule({

@@ -1,3 +1,5 @@
+import { Categoria } from "./categoria"
+
 export interface Productos{
 
     id: number,
@@ -5,8 +7,8 @@ export interface Productos{
     precio: number,
     stock: number,
     fechaIngreso: Date,
-    estado: boolean
-
+    estado: boolean,
+    categoria: Categoria
 
 
 }

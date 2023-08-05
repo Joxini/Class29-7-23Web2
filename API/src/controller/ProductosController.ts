@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { AppDataSource } from "../data-source";
 import { Producto } from "../entity/Producto";
 import { validate } from "class-validator";
+import { CatergoriaProducto } from "../entity/CategoriaProducto";
+
 
 class ProductosController {
   static getAll = async (req: Request, resp: Response) => {
@@ -9,7 +11,7 @@ class ProductosController {
       const productosRepo = AppDataSource.getRepository(Producto);
 
       const listaProductos = await productosRepo.find({
-        where: { estado: true },
+        where: { estado: true }, relations:{categoria:true},
       });
 
       if (listaProductos.length == 0) {
@@ -34,7 +36,7 @@ class ProductosController {
       let producto;
       try {
         producto = await productosRepo.findOneOrFail({
-          where: { id, estado: true },
+          where: { id, estado: true },relations:{categoria:true},
         });
       } catch (error) {
         return resp
@@ -51,12 +53,17 @@ class ProductosController {
   static add = async (req: Request, resp: Response) => {
     try {
       //DESTRUCTURING
-      const { id, nombre, precio, stock, fechaIngreso } = req.body;
+      const { id, nombre, precio, stock,categoria, fechaIngreso } = req.body;
 
       //validacion de datos de entrada
       if (!id) {
         return resp.status(404).json({ mensaje: "Debe indicar el ID" });
       }
+
+      if (!categoria) {
+        return resp.status(404).json({ mensaje: "Debe indicar de la categoria" });
+      }
+
       if (!nombre) {
         return resp
           .status(404)
@@ -83,8 +90,11 @@ class ProductosController {
 
       //validacion de reglas de negocio
       const productosRepo = AppDataSource.getRepository(Producto);
-      const pro = await productosRepo.findOne({ where: { id } });
-
+      const categoriaRepo = AppDataSource.getRepository(CatergoriaProducto);
+      let cat: CatergoriaProducto;
+      let pro: Producto;
+      pro = await productosRepo.findOne({ where: { id } });
+      cat = await categoriaRepo.findOne({ where: { categoria } });
       if (pro) {
         return resp
           .status(404)
@@ -99,6 +109,7 @@ class ProductosController {
       producto.precio = precio;
       producto.stock = stock;
       producto.fechaIngreso = fecha;
+      producto.categoria = cat;
       producto.estado = true;
 
       //validar con class validator
@@ -118,11 +129,14 @@ class ProductosController {
   };
 
   static update = async (req: Request, resp: Response) => {
-    const { id, nombre, precio, stock, fechaIngreso } = req.body;
+    const { id, nombre, precio, stock, categoria,fechaIngreso } = req.body;
 
     //validacion de datos de entrada
     if (!id) {
       return resp.status(404).json({ mensaje: "Debe indicar el ID" });
+    }
+    if (!categoria) {
+      return resp.status(404).json({ mensaje: "Debe indicar de la categoria" });
     }
     if (!nombre) {
       return resp
@@ -150,7 +164,9 @@ class ProductosController {
 
     //validacion de reglas de negocio
     const productosRepo = AppDataSource.getRepository(Producto);
+
     let pro: Producto;
+    
     try {
       pro = await productosRepo.findOneOrFail({ where: { id } });
     } catch (error) {
@@ -160,6 +176,7 @@ class ProductosController {
     pro.nombre = nombre;
     pro.precio = precio;
     pro.stock = stock;
+    pro.categoria = categoria;
     // pro.fechaIngreso
 
     //validar con class validator

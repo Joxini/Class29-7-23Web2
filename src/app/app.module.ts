@@ -10,9 +10,18 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material.module';
 import {HttpClientModule} from '@angular/common/http'
 import { ReactiveFormsModule } from '@angular/forms';
+import { ToastrModule } from 'ngx-toastr';
+import {MatFormFieldModule} from '@angular/material/form-field';
+
 @NgModule({
   declarations: [AppComponent, HeaderComponent, FooterComponent, MenuComponent],
-  imports: [BrowserModule, AppRoutingModule, BrowserAnimationsModule, MaterialModule, HttpClientModule,ReactiveFormsModule],
+  imports: [BrowserModule, AppRoutingModule, BrowserAnimationsModule, MaterialModule, HttpClientModule,ReactiveFormsModule,
+  ToastrModule.forRoot({
+      timeOut: 10000,
+      positionClass: 'toast-bottom-right',
+      preventDuplicates: true,
+  }),MatFormFieldModule,
+  ],
   providers: [],
   bootstrap: [AppComponent],
 })

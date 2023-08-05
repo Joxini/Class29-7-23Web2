@@ -4,6 +4,9 @@ import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 import { Productos } from 'src/app/shared/models/productos';
 import { ProductosService } from 'src/app/shared/services/productos.service';
 import { AdminProductosComponent } from './admin-productos/admin-productos.component';
+import { ToastrService } from 'ngx-toastr';
+import { CategoriasService } from 'src/app/shared/services/categorias.service';
+import { Categoria } from 'src/app/shared/models/categoria';
 
 
 // const ELEMENT_DATA: Productos[] = [];
@@ -15,15 +18,20 @@ import { AdminProductosComponent } from './admin-productos/admin-productos.compo
 
 export class ProductosComponent {
 
-  displayedColumns: string[] = ['id', 'nombre', 'precio','acciones'];
+  displayedColumns: string[] = ['id', 'nombre', 'precio','categoria','acciones'];
   dataSource = new MatTableDataSource();
+
   //Para poder de jalar los datos, lo hacemos por inyeccion de dependencia.
-  constructor(private srvProductos: ProductosService, public dialog: MatDialog){
+  constructor(private srvProductos: ProductosService, public dialog: MatDialog,
+    private mensajeria: ToastrService){
 
   }
   ngOnInit(){
     this.srvProductos.getAll().subscribe((datos) => {
       this.dataSource.data = datos;
+    },(error)=>{
+      // Mostrar el mensaje(error)
+      this.mensajeria.error(error);
     });
   }
 
@@ -31,6 +39,7 @@ export class ProductosComponent {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
+
 
   modificar():void{
     alert("Modificar")
